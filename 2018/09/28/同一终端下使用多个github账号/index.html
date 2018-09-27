@@ -1,0 +1,176 @@
+
+<!DOCTYPE html>
+<html lang="" class="loading">
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Hexo</title>
+
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="google" content="notranslate" />
+    <meta name="keywords" content="gdutEwei,"> 
+    <meta name="description" content="前言因为想搞个新的github账号统一管理资料和分享，所以出现了同一电脑不同github账号冲突问题，记录下解决方法，顺便测试下博客
+生成ssh_key假设我有2个账号分别是 a@163.com 和,"> 
+    <meta name="author" content="John Doe"> 
+    <link rel="alternative" href="atom.xml" title="Hexo" type="application/atom+xml"> 
+    <link rel="icon" href="/img/favicon.png"> 
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.css">
+    <link rel="stylesheet" href="/css/diaspora.css">
+</head>
+
+<body class="loading">
+    <div id="loader"></div>
+    <div id="single">
+    <div id="top" style="display: block;">
+    <div class="bar" style="width: 0;"></div>
+    <a class="icon-home image-icon" href="javascript:;"></a>
+    <div title="播放/暂停" class="icon-play"></div>
+    <h3 class="subtitle">同一终端下使用多个github账号</h3>
+    <div class="social">
+        <!--<div class="like-icon">-->
+            <!--<a href="javascript:;" class="likeThis active"><span class="icon-like"></span><span class="count">76</span></a>-->
+        <!--</div>-->
+        <div>
+            <div class="share">
+                <a title="获取二维码" class="icon-scan" href="javascript:;"></a>
+            </div>
+            <div id="qr"></div>
+        </div>
+    </div>
+    <div class="scrollbar"></div>
+</div>
+    <div class="section">
+        <div class="article">
+    <div class='main'>
+        <h1 class="title">同一终端下使用多个github账号</h1>
+        <div class="stuff">
+            <span>九月 28, 2018</span>
+            
+
+        </div>
+        <div class="content markdown">
+            <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>因为想搞个新的github账号统一管理资料和分享，所以出现了同一电脑不同github账号冲突问题，记录下解决方法，顺便测试下博客</p>
+<h2 id="生成ssh-key"><a href="#生成ssh-key" class="headerlink" title="生成ssh_key"></a>生成ssh_key</h2><p>假设我有2个账号分别是 <a href="mailto:a@163.com" target="_blank" rel="noopener">a@163.com</a> 和 <a href="mailto:b@163.com" target="_blank" rel="noopener">b@163.com</a> 这时候要分别生成不同的ssh_key</p>
+<ul>
+<li>第一个账号<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ ssh-keygen -t rsa -C &quot;a@163.com&quot;</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>一路回车后会自动生成id_rsa这个文件</p>
+<ul>
+<li>第二个账号<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ ssh-keygen -t rsa -C &quot;b@163.com&quot;</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>在一个回车后，出现类似这样的提示，你用新的文件名如<code>id_rsa_new</code>来区分之前生成的文件</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Enter file in which to save the key (/c/Users/13536/.ssh/id_rsa):</span><br></pre></td></tr></table></figure>
+<h2 id="github添加公钥"><a href="#github添加公钥" class="headerlink" title="github添加公钥"></a>github添加公钥</h2><p>在2个账号分别添加对应的id_rsa和id_res_new文件</p>
+<h2 id="添加key到ssh-agent"><a href="#添加key到ssh-agent" class="headerlink" title="添加key到ssh agent"></a>添加key到ssh agent</h2><p>因为默认只读取id_rsa，为了让SSH识别新的私钥，需将其添加到SSH agent中：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">ssh-agent bash</span><br><span class="line">ssh-add ~/.ssh/id_rsa_new</span><br></pre></td></tr></table></figure>
+<h2 id="配置config文件"><a href="#配置config文件" class="headerlink" title="配置config文件"></a>配置config文件</h2><p>在<code>~/.ssh</code>文件夹中添加config文本文件，内容如下</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"># 配置user1</span><br><span class="line">Host u1.github.com</span><br><span class="line">HostName github.com</span><br><span class="line">IdentityFile C:\\Users\\13536\\.ssh\\id_rsa</span><br><span class="line">PreferredAuthentications publickey</span><br><span class="line">User user1</span><br><span class="line"></span><br><span class="line"># 配置user2</span><br><span class="line">Host u2.github.com     # 这个随便填</span><br><span class="line">HostName github.com    # 对应的真实域名</span><br><span class="line">IdentityFile C:\\Users\\13536\\.ssh\\id_rsa_new  # win系统下路径</span><br><span class="line">PreferredAuthentications publickey</span><br><span class="line">User user2</span><br></pre></td></tr></table></figure>
+<h2 id="测试"><a href="#测试" class="headerlink" title="测试"></a>测试</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">ssh -T git@u1.github.com</span><br><span class="line">ssh -T git@u2.github.com</span><br></pre></td></tr></table></figure>
+<p>会分别返回不同的用户名响应！就成功了</p>
+<h2 id="克隆仓库"><a href="#克隆仓库" class="headerlink" title="克隆仓库"></a>克隆仓库</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git clone git@u1.github.com:a/test.git</span><br></pre></td></tr></table></figure>
+<p>##push</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">git remote add origin git@u1.github.com:xxxx/test.git</span><br><span class="line">git push origin master</span><br></pre></td></tr></table></figure>
+<h2 id="commit-遇到问题"><a href="#commit-遇到问题" class="headerlink" title="commit 遇到问题"></a>commit 遇到问题</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"># 在具体的git仓库配置用户</span><br><span class="line">git config user.name &quot;newname&quot;</span><br><span class="line">git config user.email &quot;newemail&quot;</span><br><span class="line"></span><br><span class="line">#git config --global --unset user.name 取消全局设置</span><br><span class="line">#git config --global --unset user.email 取消全局设置</span><br></pre></td></tr></table></figure>
+<h2 id="hexo自动部署"><a href="#hexo自动部署" class="headerlink" title="hexo自动部署"></a>hexo自动部署</h2><p>不要用https，用ssh</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">repo: ssh://git@u2.github.com/gduteweistudio/gduteweistudio.github.io.git</span><br></pre></td></tr></table></figure>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>方法其实不难，关键是原理还没掌握，以后有时间再研究</p>
+
+            <!--[if lt IE 9]><script>document.createElement('audio');</script><![endif]-->
+            <audio id="audio" loop="1" preload="auto" controls="controls" data-autoplay="false">
+                <source type="audio/mpeg" src="">
+            </audio>
+            
+                <ul id="audio-list" style="display:none">
+                    
+                        <li title='0' data-url='http://link.hhtjim.com/163/5146554.mp3'></li>
+                    
+                        <li title='1' data-url='http://link.hhtjim.com/qq/001faIUs4M2zna.mp3'></li>
+                    
+                </ul>
+            
+        </div>
+        
+    <div id='gitalk-container' class="comment link"
+        data-ae='false'
+        data-ci=''
+        data-cs=''
+        data-r=''
+        data-o=''
+        data-a=''
+        data-d='false'
+    >查看评论</div>
+
+
+    </div>
+    
+</div>
+
+
+    </div>
+</div>
+</body>
+<script src="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js"></script>
+<script src="//lib.baomitu.com/jquery/1.8.3/jquery.min.js"></script>
+<script src="/js/plugin.js"></script>
+<script src="/js/diaspora.js"></script>
+<link rel="stylesheet" href="/photoswipe/photoswipe.css">
+<link rel="stylesheet" href="/photoswipe/default-skin/default-skin.css">
+<script src="/photoswipe/photoswipe.min.js"></script>
+<script src="/photoswipe/photoswipe-ui-default.min.js"></script>
+
+<!-- Root element of PhotoSwipe. Must have class pswp. -->
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+    <!-- Background of PhotoSwipe. 
+         It's a separate element as animating opacity is faster than rgba(). -->
+    <div class="pswp__bg"></div>
+    <!-- Slides wrapper with overflow:hidden. -->
+    <div class="pswp__scroll-wrap">
+        <!-- Container that holds slides. 
+            PhotoSwipe keeps only 3 of them in the DOM to save memory.
+            Don't modify these 3 pswp__item elements, data is added later on. -->
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+        <!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+        <div class="pswp__ui pswp__ui--hidden">
+            <div class="pswp__top-bar">
+                <!--  Controls are self-explanatory. Order can be changed. -->
+                <div class="pswp__counter"></div>
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+                <button class="pswp__button pswp__button--share" title="Share"></button>
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+                <!-- Preloader demo http://codepen.io/dimsemenov/pen/yyBWoR -->
+                <!-- element will get class pswp__preloader--active when preloader is running -->
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                      <div class="pswp__preloader__cut">
+                        <div class="pswp__preloader__donut"></div>
+                      </div>
+                    </div>
+                </div>
+            </div>
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div> 
+            </div>
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+</html>
